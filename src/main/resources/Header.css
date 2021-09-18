@@ -1,0 +1,18 @@
+.Header {
+    text-align: center;
+}
+
+.Header-logo {
+    text-align: center;
+    height: 350px;
+}
+
+.Header-header {
+    height: auto;
+    padding: 20px;
+}
+
+.Header-badges > a, img {
+    margin-left: 1px;
+    margin-right: 1px;
+}
