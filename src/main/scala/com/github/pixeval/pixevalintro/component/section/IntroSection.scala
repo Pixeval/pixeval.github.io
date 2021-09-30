@@ -9,19 +9,21 @@ import slinky.web.html._
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
 
-@JSImport("resources/Intro.css", JSImport.Default)
-@js.native
-object IntroCSS extends js.Object
 
 @react
 class IntroSection extends StatelessComponent {
+  import IntroSection._
   type Props = Unit
 
   val css: IntroCSS.type = IntroCSS
 
-  override def render(): ReactElement = section(className := "Intro", style := js.Dynamic.literal(
-    background = Theme.palette.themeLight
-  ))(
+  override def render(): ReactElement = section(className := "Intro")(
     p()("基于WinUI3的Pixeval已经正在开发中，而作为旧的WPF版本除严重问题以外不再进行大量维护，请适时切换到新版Pixeval。")
   )
+}
+
+object IntroSection {
+  @JSImport("resources/Intro.css", JSImport.Default)
+  @js.native
+  object IntroCSS extends js.Object
 }
