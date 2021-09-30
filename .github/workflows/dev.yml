@@ -1,4 +1,4 @@
-name: Build Test
+name: CI Dev
 on:
   push:
     branches-ignore:
@@ -8,7 +8,7 @@ jobs:
   build:
     runs-on: ubuntu-20.04
 
-    name: Build
+    name: Build Test
 
     steps:
       - uses: actions/checkout@v2
@@ -17,7 +17,7 @@ jobs:
         name: Setup Scala
 
       - uses: actions/setup-node@v2
-        name: Setup Node 14
+        name: Setup Node.js 14.x
         with:
           node-version: '14'
 
@@ -26,3 +26,6 @@ jobs:
 
       - name: Run SBT Build
         run: sbt build
+
+      - name: Test by ls
+        run: ls -l build
