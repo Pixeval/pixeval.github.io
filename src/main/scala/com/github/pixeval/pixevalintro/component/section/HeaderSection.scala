@@ -11,12 +11,9 @@ import scala.scalajs.js
 import scala.scalajs.js.Dynamic.literal
 import scala.scalajs.js.annotation.JSImport
 
-@JSImport("resources/Header.css", JSImport.Default)
-@js.native
-object HeaderCSS extends js.Object
-
 @react
 class HeaderSection extends StatelessComponent {
+  import HeaderSection._
   type Props = Unit
 
   val css: HeaderCSS.type = HeaderCSS
@@ -39,4 +36,10 @@ class HeaderSection extends StatelessComponent {
         AImg("https://dotnet.microsoft.com/download/dotnet/thank-you/runtime-desktop-5.0.9-windows-x64-installer", "https://img.shields.io/static/v1?label=runtime&message=.NET%205.0&color=yellow&style=flat-square", "_blank")
       )
     ))
+}
+
+object HeaderSection {
+  @JSImport("resources/Header.css", JSImport.Default)
+  @js.native
+  object HeaderCSS extends js.Object
 }

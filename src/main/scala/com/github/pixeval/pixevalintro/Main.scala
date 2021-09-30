@@ -9,13 +9,17 @@ import slinky.web.ReactDOM
 import slinky.hot
 import org.scalajs.dom
 
-@JSImport("resources/index.css", JSImport.Default)
-@js.native
-object MainCSS extends js.Object
-
 object Main {
+  @JSImport("resources/index.css", JSImport.Default)
+  @js.native
+  object MainCSS extends js.Object
 
-  private val css = MainCSS
+  @JSImport("@fluentui/react/dist/css/fabric.min.css", JSImport.Default)
+  @js.native
+  object FluentUICSS extends js.Object
+
+  private val mainCSS = MainCSS
+  private val fluentUICSS = FluentUICSS
 
   @JSExportTopLevel("main")
   def main(): Unit = {

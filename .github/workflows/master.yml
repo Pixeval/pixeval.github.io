@@ -1,0 +1,91 @@
+name: CI Master
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  test-ssh:
+    runs-on: ubuntu-20.04
+    name: Test SSH
+    steps:
+      - name: Setup SSH
+        env:
+          PIXEVAL_INTRO_PRIVATE: ${{ secrets.PIXEVAL_INTRO_PRIVATE }}
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$PIXEVAL_INTRO_PRIVATE" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          git config --global user.email "smczx@hotmail.com"
+          git config --global user.name "ControlNet"
+
+      - name: Test Git Clone
+        run: |
+          mkdir build
+          cd build
+          git clone git@github.com:Pixeval/pixeval.github.io.git
+
+      - name: Test Git Push
+        working-directory: ./build
+        run: |
+          rm -R ./*
+          touch test.txt
+          git init
+          git add -A
+          git commit -m "test"
+          git remote add origin-ssh git@github.com:Pixeval/pixeval.github.io.git
+          git push origin-ssh HEAD:test -f
+          git push origin-ssh --delete test
+
+  build:
+    needs: [test-ssh]
+    runs-on: ubuntu-latest
+    name: Build and Release
+
+    steps:
+
+      - uses: actions/checkout@v1
+
+      - uses: olafurpg/setup-scala@v12
+        name: Setup Scala
+
+      - uses: actions/setup-node@v2
+        name: Setup Node.js 14.x
+        with:
+          node-version: '14'
+
+      - uses: japgolly/setup-scalajs@v1
+        name: Setup Scala.js
+
+      - name: Run SBT Build
+        run: sbt build
+
+      - name: Clean files
+        run: |
+          rm -R project
+          rm -R public
+          rm -R src
+          rm -R webpack
+          rm build.sbt
+
+      - name: Init git and commit
+        env:
+          PIXEVAL_INTRO_PRIVATE: ${{ secrets.PIXEVAL_INTRO_PRIVATE }}
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$PIXEVAL_INTRO_PRIVATE" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          git config --global user.email "smczx@hotmail.com"
+          git config --global user.name "ControlNet"
+          rm -rf .git
+          git init
+          git add -A
+          git commit -m "update"
+          git remote add origin-ssh git@github.com:Pixeval/pixeval.github.io.git
+
+      - name: Push
+        run: |
+          git push origin-ssh HEAD:web -f

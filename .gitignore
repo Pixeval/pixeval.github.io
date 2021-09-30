@@ -248,3 +248,7 @@ project/plugins/project/
 hs_err_pid*
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij+all,scala,sbt,react,node
+
+## User defined
+
+/package.json
