@@ -39,8 +39,9 @@ class ContributorSection extends Component {
         val personas: Seq[IPersonaProps] = contributors.zipWithIndex.map {
           case (user, i) => new PersonaProps(user, i).asJS
         }
-        val hrefs: Seq[String] = contributors.map(_.html_url)
-        this.setState(State(centralizeContributors(personas.size) map personas, hrefs))
+        val order: Seq[Int] = centralizeContributors(personas.size);
+        val hrefs: Seq[String] = order map contributors.map(_.html_url)
+        this.setState(State(order map personas, hrefs))
       }
       case Failure(_) => throw new Exception()
     }
