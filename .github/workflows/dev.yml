@@ -2,12 +2,11 @@ name: CI Dev
 on:
   push:
     branches-ignore:
-      - "master"
+      - master
 
 jobs:
   build:
     runs-on: ubuntu-20.04
-
     name: Build Test
 
     steps:
