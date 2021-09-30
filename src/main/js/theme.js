@@ -1,4 +1,4 @@
-import { createTheme } from "@fluentui/react";
+import {createTheme} from "@fluentui/react";
 
 export const lightTheme = createTheme({
     palette: {
@@ -52,8 +52,4 @@ export const darkTheme = createTheme({
         white: '#323130',
     }});
 
-export const isDarkMode = () => {
-    const res = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-    console.log(res)
-    return res
-}
+export const isDarkMode = () => window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
