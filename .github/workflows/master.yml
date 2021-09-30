@@ -81,6 +81,7 @@ jobs:
           git config --global user.email "smczx@hotmail.com"
           git config --global user.name "ControlNet"
           rm -rf .git
+          mv build/* .
           git init
           git add -A
           git commit -m "update"
