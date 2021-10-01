@@ -1,8 +1,16 @@
-.Contributor {
-    margin-top: 100px;
-    margin-bottom: 100px;
-}
-
 .Contributor-title {
     text-align: center;
+}
+
+
+@media(max-width: 900px) {
+
+    #Contributor-stack-div .ms-Persona-details {
+        display: none;
+    }
+
+    #Contributor-stack-div .ms-Persona {
+        margin-left: 3px;
+        margin-right: 3px;
+    }
 }

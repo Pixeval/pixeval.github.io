@@ -3,3 +3,13 @@ body {
   padding: 0;
   font-family: 'Microsoft Yahei', Verdana, Simsun, 'Segoe UI', Tahoma, Arial, sans-serif;
 }
+
+section {
+  margin-bottom: 100px;
+}
+
+@media(max-width: 900px) {
+  section {
+    margin-bottom: 30px;
+  }
+}

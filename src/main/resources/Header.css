@@ -4,7 +4,9 @@
 
 .Header-logo {
     text-align: center;
-    height: 350px;
+    height: auto;
+    max-height: 350px;
+    max-width: 100%;
 }
 
 .Header-header {

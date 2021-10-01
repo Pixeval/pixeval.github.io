@@ -50,25 +50,23 @@ class ContributorSection extends Component {
         val secondaryTexts: Seq[String] = order map contributors.map(info => s"贡献: ${ info.contributions }")
         val hrefs: Seq[String] = order map contributors.map(_.html_url)
         val isMain: Seq[Boolean] = order map (true :: List.fill(contributors.size - 1)(false))
-        this.setState(State(texts, imageUrls, secondaryTexts, hrefs, isMain))
 
-        val newTextsFuture = Future.traverse(contributors.indices.toList)(getUserName)
-        newTextsFuture onComplete {
+        val namesFuture = Future.traverse(texts)(getUserName)
+        namesFuture onComplete {
           case Success(newTexts) => this.setState(State(newTexts, imageUrls, secondaryTexts, hrefs, isMain))
           case Failure(_) => throw new Exception()
         }
       }
-
       case Failure(_) => throw new Exception()
     }
   }
 
-  private def getUserName(i: Int): Future[String] =
-    Ajax.get(s"https://api.github.com/users/${ this.state.texts(i) }").map {
+  private def getUserName(login: String): Future[String] =
+    Ajax.get(s"https://api.github.com/users/$login").map {
       response => {
         val user = JSON.parse(response.responseText).asInstanceOf[GithubUser]
         val name = user.name
-        if (name == null) user.login
+        if (name == null) login
         else name
       }
     }
