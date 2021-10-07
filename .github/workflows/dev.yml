@@ -1,0 +1,31 @@
+name: CI Dev
+on:
+  push:
+    branches-ignore:
+      - master
+      - web
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    name: Build Test
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: olafurpg/setup-scala@v12
+        name: Setup Scala
+
+      - uses: actions/setup-node@v2
+        name: Setup Node.js 14.x
+        with:
+          node-version: '14'
+
+      - uses: japgolly/setup-scalajs@v1
+        name: Setup Scala.js
+
+      - name: Run SBT Build
+        run: sbt build
+
+      - name: Test by ls
+        run: ls -l build
