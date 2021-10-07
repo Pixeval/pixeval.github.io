@@ -16,6 +16,7 @@ import typings.officeUiFabricReact.personaTypesMod.{ IPersonaProps, PersonaSize 
 import typings.officeUiFabricReact.stackTypesMod.{ Alignment, IStackProps }
 import typings.react.anon.Children
 
+import scala.concurrent.Future
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 import scala.scalajs.js
 import scala.scalajs.js.JSON
@@ -28,24 +29,47 @@ class ContributorSection extends Component {
   import ContributorSection._
 
   type Props = Unit
-  case class State(personas: Seq[IPersonaProps], hrefs: Seq[String])
-  override def initialState: State = State(Nil, Nil)
+  case class State(
+    texts: Seq[String], imageUrls: Seq[String], secondaryTexts: Seq[String], hrefs: Seq[String], isMain: Seq[Boolean]
+  ) {
+    def toPersonaProps: Seq[PersonaProps] = texts.indices.map { i =>
+      PersonaProps(imageUrls(i), texts(i), secondaryTexts(i), isMain(i))
+    }
+  }
+
+  override def initialState: State = State(Nil, Nil, Nil, Nil, Nil)
   val css: ContributorCSS.type = ContributorCSS
 
   override def componentWillMount(): Unit = {
     Ajax.get("https://api.github.com/repos/Pixeval/Pixeval/contributors").onComplete {
       case Success(value) => {
-        val contributors = JSON.parse(value.responseText).asInstanceOf[js.Array[GithubUser]].toSeq
-        val personas: Seq[IPersonaProps] = contributors.zipWithIndex.map {
-          case (user, i) => new PersonaProps(user, i).asJS
-        }
-        val order: Seq[Int] = centralizeContributors(personas.size);
+        val contributors = JSON.parse(value.responseText).asInstanceOf[js.Array[Contributor]].toSeq
+        val order: Seq[Int] = centralizeContributors(contributors.size)
+        val texts: Seq[String] = order map contributors.map(_.login)
+        val imageUrls: Seq[String] = order map contributors.map(_.avatar_url)
+        val secondaryTexts: Seq[String] = order map contributors.map(info => s"贡献: ${ info.contributions }")
         val hrefs: Seq[String] = order map contributors.map(_.html_url)
-        this.setState(State(order map personas, hrefs))
+        val isMain: Seq[Boolean] = order map (true :: List.fill(contributors.size - 1)(false))
+
+        val namesFuture = Future.traverse(texts)(getUserName)
+        namesFuture onComplete {
+          case Success(newTexts) => this.setState(State(newTexts, imageUrls, secondaryTexts, hrefs, isMain))
+          case Failure(_) => throw new Exception()
+        }
       }
       case Failure(_) => throw new Exception()
     }
   }
+
+  private def getUserName(login: String): Future[String] =
+    Ajax.get(s"https://api.github.com/users/$login").map {
+      response => {
+        val user = JSON.parse(response.responseText).asInstanceOf[GithubUser]
+        val name = user.name
+        if (name == null) login
+        else name
+      }
+    }
 
   final val headerDesc: String = "贡献者"
 
@@ -56,7 +80,7 @@ class ContributorSection extends Component {
     .setHorizontalAlign(Alignment.center)
     .setClassName("Contributor-stack").asInstanceOf[IStackProps with Children])(
 
-    this.state.personas.map(Persona.withProps)
+    this.state.toPersonaProps.map(_.asJS).map(Persona.withProps)
   )
 
   private def addAForPersonas(): Unit = {
@@ -93,7 +117,7 @@ class ContributorSection extends Component {
   }
 
   override def render(): ReactElement = {
-    if (this.state.personas.nonEmpty)
+    if (this.state.isMain.nonEmpty)
       section(className := "Contributor")(
 
         h2(className := "Contributor-title", style := js.Dynamic.literal(
@@ -113,19 +137,22 @@ object ContributorSection {
   object ContributorCSS extends js.Object
 
   @js.native
-  trait GithubUser extends js.Object {
+  trait Contributor extends js.Object {
     val login: String
     val avatar_url: String
     val contributions: Int
     val html_url: String
   }
 
-  class PersonaProps(info: GithubUser, i: Int) {
-    val imageUrl: String = info.avatar_url
-    val text: String = info.login
-    val secondaryText: String = s"贡献: ${ info.contributions }"
+  @js.native
+  trait GithubUser extends js.Object {
+    val login: String
+    val name: String
+  }
 
-    def getSize: PersonaSize with Double = if (i == 0) mainSize else otherSize
+  case class PersonaProps(imageUrl: String, text: String, secondaryText: String, isMain: Boolean) {
+
+    def getSize: PersonaSize with Double = if (isMain) mainSize else otherSize
 
     def asJS: IPersonaProps = {
       val obj = IPersonaProps()
