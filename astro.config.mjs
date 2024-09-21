@@ -9,9 +9,9 @@ export default defineConfig({
   integrations: [
     starlight({
       title: "Pixeval",
-      defaultLocale: "root",
+      defaultLocale: "zh-cn",
       locales: {
-        root: {
+        "zh-cn": {
           label: "简体中文",
           lang: "zh-CN",
         },
@@ -26,7 +26,7 @@ export default defineConfig({
         },
       },
       logo: {
-        src: "./src/assets/logo.png",
+        src: "./src/assets/logo.svg",
       },
       social: {
         github: "https://github.com/Pixeval/Pixeval",
