@@ -1,5 +1,8 @@
 name: CI Master
 
+on:
+  workflow_dispatch:
+
 jobs:
   test-ssh:
     runs-on: ubuntu-20.04
