@@ -1,7 +1,5 @@
 name: CI Master
 
-on:
-
 jobs:
   test-ssh:
     runs-on: ubuntu-20.04
