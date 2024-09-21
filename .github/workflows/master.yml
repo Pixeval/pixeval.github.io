@@ -1,9 +1,6 @@
 name: CI Master
 
 on:
-  push:
-    branches:
-      - master
 
 jobs:
   test-ssh:
