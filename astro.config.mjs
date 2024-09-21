@@ -45,6 +45,9 @@ export default defineConfig({
         },
       ],
       customCss: ["./src/tailwind.css"],
+      components: {
+        Footer: "./src/components/Footer.astro",
+      },
     }),
     tailwind({ applyBaseStyles: false }),
   ],
