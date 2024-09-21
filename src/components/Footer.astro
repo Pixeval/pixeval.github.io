@@ -3,6 +3,8 @@ import type { Props } from '@astrojs/starlight/props';
 import Default from '@astrojs/starlight/components/Footer.astro';
 ---
 
+
+<Default {...Astro.props}><slot /></Default>
 <script src="https://giscus.app/client.js"
         data-repo="Pixeval/pixeval.github.io"
         data-repo-id="MDEwOlJlcG9zaXRvcnk0MDc3ODYzMjU="
@@ -18,4 +20,3 @@ import Default from '@astrojs/starlight/components/Footer.astro';
         crossorigin="anonymous"
         async>
 </script>
-<Default {...Astro.props}><slot /></Default>
