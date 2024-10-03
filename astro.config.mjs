@@ -2,12 +2,20 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import tailwind from "@astrojs/tailwind";
+import starlightDocSearch from "@astrojs/starlight-docsearch";
 
 // https://astro.build/config
 export default defineConfig({
   site: "https://pixeval.github.io",
   integrations: [
     starlight({
+      plugins: [
+        starlightDocSearch({
+          appId: 'GTN5N5X5CJ',
+          apiKey: '78ea17a22490a43413391f6fe75315c3',
+          indexName: 'pixevalio',
+        }),
+      ],
       title: "Pixeval",
       defaultLocale: "root",
       locales: {
@@ -51,4 +59,5 @@ export default defineConfig({
     }),
     tailwind({ applyBaseStyles: false }),
   ],
+  
 });
